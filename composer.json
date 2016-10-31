@@ -1,0 +1,16 @@
+{
+    "name": "hansvn/laravel-helper",
+    "description": "Helper Functions for the laravel Framework",
+    "license": "MIT",
+    "keywords": ["laravel", "helper"],
+    "authors": [
+        {
+            "name": "HansVN",
+            "email": "hans@brandworks.be"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "minimum-stability": "stable"
+}
