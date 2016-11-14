@@ -20,7 +20,7 @@ class Helper {
             return "";
         }
 
-        if( !($date instanceof DateTime) ) {
+        if( !($date instanceof DateTimeInterface) ) {
             $date = new DateTime($date);
         }
 
