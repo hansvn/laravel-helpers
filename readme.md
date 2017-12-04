@@ -4,9 +4,19 @@ This package contains display formatting helpers for your php project.
 
 ### Usage
 
-all functions are called as static functions. Example:
-```
+all functions are called as static functions. Some examples:
+```php
 Helper::formatDate($date);
+Helper::isJson($json_string);
+Helper::cast($object, $to_class_name);
+Helper::toBase64($filename);
+Helper::timeSince($date);
+Helper::truncate($really_long_string);
+Helper::mime($file_extension);
+Helper::checkForFolder($folder_path);
+Helper::is_serialized($string_to_check);
+Helper::maxFileUploadSize();
+Helper::hex2rgb($hexadecimal_string);
 ```
 
 ## Installation
@@ -45,17 +55,30 @@ The defaults configuration settings are set in `config/helper.php`. Copy this fi
 
 ### Functions
 
-There are serveral functions in this package:
+There are serveral functions in this package (represented with the parameters of the functions definition):
 
 * formatDate: function to format a date
+  * `formatDate($date, $format = null)`
 * isJson: check if a given string is json
+  * `isJson($string)`
 * cast: cast object to an(other) class
+  * `cast($obj, $to_class)`
 * toBase64: base64 encode files
-* timeSince: function to calculate date difference
-* truncate: cut a text to specified length and add '...' at the and of the string
+  * `toBase64($directory, $file = null, $with_mime = false)`
+* timeSince: display the difference in time in a human readable form
+  * `timeSince($date, $now = null)`
+* truncate: cut a text to specified length and add three dots ('...') at the and of the string
+  * `truncate($text, $length = 100, $options = array())`
 * mime: Get the mime type from file extension
+  * `mime($extension, $default = 'application/octet-stream')`
 * checkForFolder: Check if a folder exists and create if not exists
+  * `checkForFolder($folder, $permissions = 0775)`
 * is_serialized: Check if a string is serialized
+  * `is_serialized($string)`
+* maxFileUploadSize: Get the maximum file upload size (in MB) allowed by the sever
+  * `maxFileUploadSize()`
+* hex2rgb: Convert a hexadecimal color to their rgb values
+  * `hex2rgb($hex)`
 
 
 ## License

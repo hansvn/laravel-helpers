@@ -9,15 +9,16 @@ class Helper {
     /**
      * function to format a date
      *
-     * @param date
-     * @param date_format
+     * @param $date
+     * @param string $format
+     * @return string
      **/
     public static function formatDate($date, $format = null) {
         if(!$date && config('helper.always_display_date')) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', '0001-01-01 00:00:00');
         } elseif(!$date) {
             if(config('helper.default_zero_value')) return config('helper.default_zero_value');
-            return "";
+            return '';
         }
 
         if( !($date instanceof DateTimeInterface) ) {
@@ -55,8 +56,9 @@ class Helper {
             $obj_out = 'O:' . strlen($to_class) . ':"' . $to_class . '":' . substr($obj_in, $obj_in[2] + 7);
             return unserialize($obj_out);
         }
-        else
+        else {
             return false;
+        }
     }
 
     /**
@@ -66,7 +68,6 @@ class Helper {
      * @param string $file
      * @return base64 string
      **/
-
     public static function toBase64($directory, $file = null, $with_mime = false) {
         if($file == null) $absolutePath = $directory;
         else $absolutePath = $directory.DIRECTORY_SEPARATOR.$file;
@@ -94,8 +95,9 @@ class Helper {
     /**
      * function to calculate date difference
      *
-     * @param date
-     * @param time since date
+     * @param $date
+     * @param $now time since date
+     * @return string
      **/
     public static function timeSince($date, $now = null) {
         if(!$now) $now = new DateTime;
@@ -103,7 +105,7 @@ class Helper {
         if(!$date && config('helper.always_display_date')) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', '0001-01-01 00:00:00');
         } elseif(!$date) {
-            return "";
+            return '';
         }
 
         if( !($date instanceof DateTime) )
@@ -128,6 +130,11 @@ class Helper {
     
     /**
      * cut a text to specified length and add '...' at the and of the string
+     *
+     * @param string $text
+     * @param integer $length of the text
+     * @param array $options
+     * @return string
      */
     public static function truncate($text, $length = 100, $options = array()) {
         $default = array(
@@ -225,7 +232,6 @@ class Helper {
      * @param string $default
      * @return string
      **/
-
     public static function mime($extension, $default = 'application/octet-stream') {
         $mimes = array('hqx' => 'application/mac-binhex40','cpt' => 'application/mac-compactpro','csv' => array('text/x-comma-separated-values', 
             'text/comma-separated-values', 'application/octet-stream'),'bin' => 'application/macbinary','dms' => 'application/octet-stream',
@@ -264,7 +270,6 @@ class Helper {
      * @param string $persmissions
      * @return boolean
      **/
-
     public static function checkForFolder($folder, $permissions = 0775) {
         if (!file_exists($folder)) {
             if( mkdir($folder, $permissions, true) )
@@ -283,7 +288,6 @@ class Helper {
      * @param string $string
      * @return boolean
      **/
-
     function is_serialized($string) {
         $test = @unserialize($string);
         if ($string === 'b:0;' || $test !== false) {
@@ -292,5 +296,76 @@ class Helper {
         }
             
         return false;
+    }
+
+    /**
+     * Convert PHP (file)sizes to bytes
+     *
+     * @param string $phpSize
+     * @return integer $intValue
+     **/
+    public static function convertPHPSizeToBytes($phpSize)   {
+        if ( is_numeric( $phpSize) ) {
+            return $phpSize;
+        }
+        $phpSuffix = substr($phpSize, -1);
+        $intValue = substr($phpSize, 0, -1);
+        switch(strtoupper($phpSuffix)) {
+            case 'P':  
+            $intValue *= 1024;  
+            case 'T':  
+            $intValue *= 1024;  
+            case 'G':  
+            $intValue *= 1024;  
+            case 'M':  
+            $intValue *= 1024;  
+            case 'K':  
+            $intValue *= 1024;  
+            break;  
+        }
+
+        return $intValue;
+        return floor( ($intValue/1024/1024) * 10 ) / 10; //we need it in MB - on decimal precicion
+    }
+    /**
+     * Convert PHP (file)sizes to MegaBytes
+     * This function adds a conversion to MegaBytes from convertPHPSizeToBytes
+     *
+     * @param string $phpSize
+     * @return integer $intValue
+     **/
+    public static function convertPHPSizeToMegaBytes($phpSize) {
+        return floor( ( static::convertPHPSizeToBytes($phpSize) /1024/1024) * 10 ) / 10;
+    }
+
+    /**
+     * Get the maximum file upload size (in MB) allowed by the sever
+     *
+     * @return integer size
+     **/
+    public static function maxFileUploadSize() {  
+        return min(static::convertPHPSizeToMegaBytes(ini_get('post_max_size')), static::convertPHPSizeToMegaBytes(ini_get('upload_max_filesize')));  
+    }
+
+    /**
+     * Convert a hexadecimal color to their rgb values
+     *
+     * @param string $hex
+     * @return array
+     **/
+    public static function hex2rgb($hex) {
+        $hex = str_replace('#', '', $hex);
+
+        if(strlen($hex) == 3) {
+            $r = hexdec(substr($hex,0,1).substr($hex,0,1));
+            $g = hexdec(substr($hex,1,1).substr($hex,1,1));
+            $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+        } else {
+            $r = hexdec(substr($hex,0,2));
+            $g = hexdec(substr($hex,2,2));
+            $b = hexdec(substr($hex,4,2));
+        }
+        $rgb = array($r, $g, $b);
+        return $rgb; // returns an array with the rgb values
     }
 }
